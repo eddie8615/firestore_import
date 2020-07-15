@@ -7,6 +7,7 @@ import org.apache.poi.ss.util.CellUtil;
 import org.apache.poi.util.SystemOutLogger;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.json.simple.JSONObject;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -125,7 +126,6 @@ public class Main {
                         }
                         else{
                             String category = productCategory.get(colIndex % 4);
-
                             if(category.equals("사용부서")){
                                 department.setCategory(content);
                             }else if(category.equals("방문")){
@@ -145,6 +145,8 @@ public class Main {
                 }
             }
 
+            JSONObject object = new JSONObject();
+            
         }
         catch(Exception e)
         {
