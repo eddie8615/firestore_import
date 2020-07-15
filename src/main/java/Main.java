@@ -19,6 +19,9 @@ import java.util.*;
 public class Main {
 
     private static final int COLUMNINTERVAL = 4;
+    private static final int NAMESROWSECTOR = 1;
+    private static final int CATEGORYROWSECTOR = 2;
+
     private static final Path dataDir = Paths.get("dataset");
     private static List<String> sheetName = new ArrayList<>();
     private static Map<String, List<String>> header = new HashMap<>();
@@ -46,11 +49,23 @@ public class Main {
 
                 for(int rowIndex = 0; rowIndex < sheet.getPhysicalNumberOfRows(); rowIndex++){
                     Row row = sheet.getRow(rowIndex);
+
+//                  check if the sheet is end
                     if(row == null || row.getCell(0) == null || row.getCell(0).getStringCellValue().equals("")){
                         continue;
                     }
 
+//                  check if in NAMESROWSECTOR
+                    if(rowIndex == NAMESROWSECTOR){
+                        
+                    }
 
+//                  check if in CATEGORYROWSECTOR
+                    if(rowIndex == CATEGORYROWSECTOR){
+
+                    }
+
+//                  fetch data
                     for(int colIndex = 0; colIndex < row.getLastCellNum(); colIndex++){
                         Integer mergedCellIndex = getIndexIfCellIsInMergedCells(sheet, rowIndex, colIndex);
                         System.out.println("Row:" + rowIndex + ", Column: " + colIndex);
