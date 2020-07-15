@@ -11,12 +11,14 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
 public class Main {
 
+    private static final int COLUMNINTERVAL = 4;
     private static final Path dataDir = Paths.get("dataset");
     private static List<String> sheetName = new ArrayList<>();
     private static Map<String, List<String>> header = new HashMap<>();
@@ -24,13 +26,14 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
 
-        Path fromPath = dataDir.resolve(args[0]);
+        Path fromPath = dataDir.resolve("hostipals.xlsx");
         if(fromPath == null){
             System.out.println("no file found");
             return;
         }
 
         System.out.println(fromPath.toString());
+
         try
         {
             File file = new File(fromPath.toString());
@@ -41,22 +44,35 @@ public class Main {
             for(XSSFSheet sheet : wb){
                 sheetName.add(sheet.getSheetName());
 
-                for(int rowIndex = 0; rowIndex < sheet.getLastRowNum(); rowIndex++){
+                for(int rowIndex = 0; rowIndex < sheet.getPhysicalNumberOfRows(); rowIndex++){
                     Row row = sheet.getRow(rowIndex);
-                    if(row == null)
+                    if(row == null || row.getCell(0) == null || row.getCell(0).getStringCellValue().equals("")){
                         continue;
+                    }
+
 
                     for(int colIndex = 0; colIndex < row.getLastCellNum(); colIndex++){
                         Integer mergedCellIndex = getIndexIfCellIsInMergedCells(sheet, rowIndex, colIndex);
-
+                        System.out.println("Row:" + rowIndex + ", Column: " + colIndex);
                         if(mergedCellIndex != null){
+                            System.out.println(mergedCellIndex);
+
                             CellRangeAddress cell = sheet.getMergedRegion(mergedCellIndex);
+//                          Debugging
+
+                            System.out.println("merged region first row: " + cell.getFirstRow());
+                            System.out.println("merged region last row: " + cell.getLastRow());
+                            System.out.println("merged region first column: " + cell.getFirstColumn());
+                            System.out.println("merged region last column: " + cell.getLastColumn());
+
+                            System.out.println("Content: " + readContentFromMergedCells(sheet, cell));
+                            System.out.println("end");
                             //my logic here
 
-                            int lastIndexOfMergedCell = sheet.getMergedRegion(mergedCellIndex).getLastColumn();
+                            int sizeOfMergedCell = sheet.getMergedRegion(mergedCellIndex).getLastColumn() - sheet.getMergedRegion(mergedCellIndex).getFirstColumn();
 
                             //skip those merged cells
-                            colIndex += lastIndexOfMergedCell - 1;
+                            colIndex += sizeOfMergedCell;
 
                         }
                         else{
@@ -64,6 +80,7 @@ public class Main {
                             if(cell == null)
                                 continue;
 
+                            System.out.println(cell.getStringCellValue());
 
                         }
                     }
@@ -82,6 +99,7 @@ public class Main {
 
         for (int i = 0; i < numberOfMergedRegions; i++) {
             CellRangeAddress mergedCell = sheet.getMergedRegion(i);
+
 
             if (mergedCell.isInRange(row, column)) {
                 return i;
