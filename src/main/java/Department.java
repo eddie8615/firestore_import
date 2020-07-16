@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.List;
 
 public class Department {
@@ -6,7 +7,7 @@ public class Department {
     private String id;
     private String category;
     private String nurse;
-    private List<String> codedProducts;
+    private List<Product> codedProducts;
 
     public Department(){
 
@@ -52,11 +53,27 @@ public class Department {
         this.location = location;
     }
 
-    public List<String> getCodedProducts() {
+    public List<Product> getCodedProducts() {
         return codedProducts;
     }
 
-    public void setCodedProducts(List<String> codedProducts) {
+    public void setCodedProducts(List<Product> codedProducts) {
         this.codedProducts = codedProducts;
+    }
+
+    public void addProduct(Product product){
+        if(codedProducts == null)
+            codedProducts = new ArrayList<>();
+        codedProducts.add(product);
+    }
+
+    public boolean isAllDataSet(){
+        if (name != null && location != null && id != null && category != null && nurse != null && codedProducts != null)
+            return true;
+        return false;
+    }
+
+    public String toString(){
+        return "Name: " + name + "Location: " + location + "category: " + category + "Nurse: " + nurse + "Product num: " + String.valueOf(codedProducts.size());
     }
 }
