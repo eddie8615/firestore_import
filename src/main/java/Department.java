@@ -61,6 +61,12 @@ public class Department {
         this.codedProducts = codedProducts;
     }
 
+    public void addAllProducts(List<Product> products){
+        if(codedProducts == null)
+            codedProducts = new ArrayList<>();
+        codedProducts.addAll(products);
+    }
+
     public void addProduct(Product product){
         if(codedProducts == null)
             codedProducts = new ArrayList<>();

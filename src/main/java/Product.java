@@ -1,9 +1,13 @@
+import java.util.HashMap;
+import java.util.List;
+
 public class Product {
-    private String deptName;
-    private String lastVisited;
-    private boolean isSampleProvided;
-    private String interest;
+    private String contract;
+    private String sample;
+    private String intro;
+    private String revisit;
     private String name;
+    private String id;
 
     public Product(){
 
@@ -17,48 +21,45 @@ public class Product {
         this.name = name;
     }
 
-    public String getDeptName() {
-        return deptName;
+    public String getContract() {
+        return contract;
     }
 
-    public void setDeptName(String deptName) {
-        this.deptName = deptName;
+    public void setContract(String contract) {
+        this.contract = contract;
     }
 
-    public String getLastVisited() {
-        return lastVisited;
+    public String getSample() {
+        return sample;
     }
 
-    public void setLastVisited(String lastVisited) {
-        this.lastVisited = lastVisited;
+    public void setSample(String sample) {
+        this.sample = sample;
     }
 
-    public boolean isSampleProvided() {
-        return isSampleProvided;
+    public String getIntro() {
+        return intro;
     }
 
-    public void setSampleProvided(boolean sampleProvided) {
-        isSampleProvided = sampleProvided;
+    public void setIntro(String intro) {
+        this.intro = intro;
     }
 
-    public String getInterest() {
-        return interest;
+    public String getRevisit() {
+        return revisit;
     }
 
-    public void setInterest(String interest) {
-        this.interest = interest;
+    public void setRevisit(String revisit) {
+        this.revisit = revisit;
     }
 
-    public boolean isAllDataSet(){
-        if(deptName != null && lastVisited != null && interest != null && name != null)
-            return true;
-        return false;
+    public String getId() {
+        return id;
     }
 
-    public void setDefault() {
-        deptName =null;
-        interest = null;
-        isSampleProvided = false;
-        lastVisited = null;
+    public void setId(String id) {
+        this.id = id;
     }
+
+
 }
