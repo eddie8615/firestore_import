@@ -7,10 +7,19 @@ public class Department {
     private String id;
     private String category;
     private String nurse;
+    private String contact;
     private List<Product> codedProducts;
 
     public Department(){
 
+    }
+
+    public String getContact() {
+        return contact;
+    }
+
+    public void setContact(String contact) {
+        this.contact = contact;
     }
 
     public String getNurse() {

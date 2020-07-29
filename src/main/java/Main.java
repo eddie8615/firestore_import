@@ -2,6 +2,7 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.util.SystemOutLogger;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
@@ -15,9 +16,9 @@ import java.util.*;
 
 public class Main {
 
-    private static final int COLUMNINTERVAL = 4;
-    private static final int NAMESROWSECTOR = 1;
-    private static final int CATEGORYROWSECTOR = 2;
+    private static final int COLUMNINTERVAL = 5;
+    private static final int NAMESROWSECTOR = 0;
+    private static final int CATEGORYROWSECTOR = 1;
 
     private static final Path dataDir = Paths.get("dataset");
     private static List<String> sheetName = new ArrayList<>();
@@ -30,7 +31,7 @@ public class Main {
 
     private static Hospital currentItem;
     static Path toPath = dataDir.resolve("data.json");
-    static Path fromPath = dataDir.resolve("hostipals.xlsx");
+    static Path fromPath = dataDir.resolve("dataset1.xlsx");
 
 
     public static void main(String[] args) throws IOException {
@@ -47,6 +48,12 @@ public class Main {
         productNames.add("AB");
         productNames.add("LINER");
         productNames.add("기타");
+
+        hospitalCategory.add("category");
+        hospitalCategory.add("name");
+        hospitalCategory.add("nurse");
+        hospitalCategory.add("location");
+        hospitalCategory.add("contact");
 
         try
         {
@@ -70,11 +77,12 @@ public class Main {
                 currentItem = new Hospital();
                 currentItem.setId(String.valueOf(index++));
 
+                System.out.println(sheet.getPhysicalNumberOfRows());
                 for(int rowIndex = 0; rowIndex < sheet.getPhysicalNumberOfRows(); rowIndex++){
                     Row row = sheet.getRow(rowIndex);
                     System.out.println(rowIndex);
 //                  check if the sheet is end
-                    if(row == null || rowIndex == 0 || row.getCell(0) == null || row.getCell(0).getStringCellValue().equals("")){
+                    if(row == null || row.getCell(0) == null){
                         continue;
                     }
 
@@ -101,11 +109,6 @@ public class Main {
 //                  check if in CATEGORYROWSECTOR
 //                  retrieve all categories
                     if(rowIndex == CATEGORYROWSECTOR){
-                        for(int colIndex = 0; colIndex < COLUMNINTERVAL; colIndex++){
-//                              hospital variables section
-                            Cell cell = sheet.getRow(rowIndex).getCell(colIndex);
-                            hospitalCategory.add(cell.getStringCellValue());
-                        }
                         continue;
                     }
 
@@ -120,41 +123,41 @@ public class Main {
                         if(content.equals("") || content == null)
                             content = "";
 
-                        String category = hospitalCategory.get(colIndex);
-                        System.out.println(category);
-                        if(category.equals("구분")){
-                            department.setCategory(content);
-                            System.out.println(content + " is set");
-                        }else if(category.equals("부서")){
-                            department.setName(content);
-                            System.out.println(content + " is set");
-                        }else if(category.equals("위치")){
-                            department.setLocation(content);
-                            System.out.println(content + " is set");
-                        }else{
-                            if(content.equals("") || content == null){
-                                department.setNurse("");
+                        switch (colIndex){
+                            case 0:
+                                department.setCategory(content);
                                 System.out.println(content + " is set");
-                            }
-                            else
+
+                                break;
+                            case 1:
+                                department.setName(content);
+                                System.out.println(content + " is set");
+                                break;
+                            case 2:
                                 department.setNurse(content);
+                                System.out.println(content + " is set");
+                                break;
+                            case 3:
+                                department.setLocation(content);
+                                System.out.println(content + " is set");
+                                break;
+                            case 4:
+                                department.setContact(content);
+                                System.out.println(content + " is set");
+                                break;
+                            default:
+                                System.out.println("Some kind of error occurs");
+                                break;
                         }
                     }
 
-
                     department.addAllProducts(products);
                     System.out.println("End of row");
-//                    if(department.getCodedProducts() == null){
-//                        System.out.println("products are null");
-//                    }else
-//                        System.out.println("#of products: " + department.getCodedProducts().size());
                     System.out.println(department.toString());
                     currentItem.addDepartment(department);
-                    if(currentItem.getDepartments().size() > 42)
-                        System.out.println(currentItem.getDepartments().get(42));
+
                 }
                 System.out.println("#of dept: " + currentItem.getDepartments().size());
-                hospitalCategory.clear();
                 result.add(currentItem);
 
             }
@@ -204,6 +207,7 @@ public class Main {
                 departmentObj.put("id", department.getId());
                 departmentObj.put("nurse", department.getNurse());
                 departmentObj.put("name", department.getName());
+                departmentObj.put("contact", department.getContact());
                 JSONObject productCollection = new JSONObject();
                 productCollection.put("products", productArray);
                 departmentObj.put("__collections__", productCollection);
@@ -216,7 +220,7 @@ public class Main {
             hospitalObject.put("__collections__", departmentCollection);
             hospitalArray.add(hospitalObject);
         }
-        rootCollection.put("testHospitals", hospitalArray);
+        rootCollection.put("hospitals", hospitalArray);
         finalCollection.put("__collections__", rootCollection);
 
 //        System.out.println(finalCollection);
